@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 获取音频元素
     const audioPlayer = document.getElementById('audio-player');
+    const lyricsAlbumImg = document.getElementById('lyrics-album-img');
 
     // 歌词数据
     const lyricsData = [
@@ -106,6 +107,91 @@ document.addEventListener('DOMContentLoaded', function() {
             lyricsModal.style.display = 'none';
         });
     }
+// 评论区功能
+const commentsBtn = document.getElementById('comments-btn');
+const commentsModal = document.getElementById('comments-modal');
+const commentInput = document.getElementById('comment-input');
+const submitCommentBtn = document.getElementById('submit-comment');
+const commentsList = document.getElementById('comments-list');
+
+// 点击评论区按钮弹出评论框
+if (commentsBtn && commentsModal) {
+    commentsBtn.addEventListener('click', function() {
+        commentsModal.style.display = 'block';
+    });
+}
+
+// 关闭评论区弹出框
+if (commentsModal && closeModal) {
+    const closeButtons = commentsModal.querySelectorAll('.close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            commentsModal.style.display = 'none';
+        });
+    });
+}
+
+// 点击评论区弹出框外部区域关闭
+if (commentsModal) {
+    window.addEventListener('click', function(event) {
+        if (event.target === commentsModal) {
+            commentsModal.style.display = 'none';
+        }
+    });
+}
+
+// 提交评论功能
+if (submitCommentBtn && commentInput && commentsList) {
+    submitCommentBtn.addEventListener('click', function() {
+        const commentText = commentInput.value.trim();
+        if (commentText) {
+            // 创建新评论元素
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            
+            // 获取当前时间
+            const now = new Date();
+            const timeString = now.getFullYear() + '-' + 
+                              String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                              String(now.getDate()).padStart(2, '0') + ' ' +
+                              String(now.getHours()).padStart(2, '0') + ':' + 
+                              String(now.getMinutes()).padStart(2, '0');
+            
+            newComment.innerHTML = `
+                <p><strong>用户:</strong> ${commentText}</p>
+                <span class="comment-time">${timeString}</span>
+            `;
+            
+            // 将新评论添加到评论列表顶部
+            commentsList.insertBefore(newComment, commentsList.firstChild);
+            
+            // 清空输入框
+            commentInput.value = '';
+        } else {
+            alert('请输入评论内容');
+        }
+    });
+}
+
+// 收藏功能
+const favoriteCount = document.getElementById('favorite-count');
+let isFavorite = false;
+
+if (favoriteCount) {
+    favoriteCount.addEventListener('click', function() {
+        if (isFavorite) {
+            // 取消收藏
+            favoriteCount.style.backgroundColor = '#f8f9fa';
+            favoriteCount.style.color = '#333';
+            isFavorite = false;
+        } else {
+            // 添加收藏
+            favoriteCount.style.backgroundColor = '#dc3545';
+            favoriteCount.style.color = 'white';
+            isFavorite = true;
+        }
+    });
+}
 
     // 点击弹出框外部区域关闭
     if (lyricsModal) {
@@ -116,13 +202,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 播放/暂停功能
+    // 播放/暂停按钮事件
     if (playBtn && audioPlayer) {
         playBtn.addEventListener('click', function() {
             if (audioPlayer.paused) {
                 audioPlayer.play()
                     .then(() => {
                         playBtn.textContent = '暂停';
+                        // 同步歌词框按钮状态
+                        const lyricsPlayBtn = document.getElementById('lyrics-play-btn');
+                        if (lyricsPlayBtn) {
+                            lyricsPlayBtn.textContent = '暂停';
+                        }
+                        lyricsAlbumImg.classList.add('playing');
                     })
                     .catch(error => {
                         console.error('播放失败:', error);
@@ -131,14 +223,50 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 audioPlayer.pause();
                 playBtn.textContent = '播放';
+                // 同步歌词框按钮状态
+                const lyricsPlayBtn = document.getElementById('lyrics-play-btn');
+                if (lyricsPlayBtn) {
+                    lyricsPlayBtn.textContent = '播放';
+                }
+                lyricsAlbumImg.classList.remove('playing');
             }
         });
     }
 
-    // 音频播放完毕后重置按钮
-    if (audioPlayer && playBtn) {
+    // 歌词框中的播放/暂停按钮控制
+    const lyricsPlayBtn = document.getElementById('lyrics-play-btn');
+    if (lyricsPlayBtn && audioPlayer && playBtn) {
+        lyricsPlayBtn.addEventListener('click', function() {
+            if (audioPlayer.paused) {
+                audioPlayer.play()
+                    .then(() => {
+                        playBtn.textContent = '暂停';
+                        lyricsPlayBtn.textContent = '暂停';
+                        lyricsAlbumImg.classList.add('playing');
+                    })
+                    .catch(error => {
+                        console.error('播放失败:', error);
+                        alert('播放失败，请检查音频文件是否存在');
+                    });
+            } else {
+                audioPlayer.pause();
+                playBtn.textContent = '播放';
+                lyricsPlayBtn.textContent = '播放';
+                lyricsAlbumImg.classList.remove('playing');
+            }
+        });
+    }
+
+    // 当音频播放结束时，停止旋转并重置按钮文本
+    if (audioPlayer) {
         audioPlayer.addEventListener('ended', function() {
-            playBtn.textContent = '播放';
+            if (playBtn) {
+                playBtn.textContent = '播放';
+            }
+            if (lyricsPlayBtn) {
+                lyricsPlayBtn.textContent = '播放';
+            }
+            lyricsAlbumImg.classList.remove('playing');
             resetLyrics();
         });
     }

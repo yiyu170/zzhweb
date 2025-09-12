@@ -117,7 +117,7 @@
                 <button id="prev-btn">上一首</button>
                 <button id="play-btn">播放/暂停</button>
                 <button id="next-btn">下一首</button>
-                 <!-- 音量控制 -->
+                <!-- 音量控制 -->
                 <div class="volume-control">
                     <span class="volume-icon">🔊</span>
                     <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="100">
@@ -137,9 +137,45 @@
     <div id="lyrics-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>歌词</h2>
-            <div class="lyrics-container" id="lyrics-container">
-                <div class="lyrics-placeholder">播放音乐以查看歌词</div>
+            <h2>歌词 Snooze/SZA</h2>
+            <div class="lyrics-content">
+                <div class="lyrics-sidebar">
+                    <img id="lyrics-album-img" class="lyrics-album-img" src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/OIP-C.webp" alt="专辑封面">
+                    <div class="lyrics-controls">
+                        <button id="lyrics-play-btn" class="lyrics-play-btn">播放/暂停</button>
+                        <button id="comments-btn" class="comments-btn">评论区</button>
+                        <div class="favorite-count" id="favorite-count">收藏数：999+❤</div>
+                    </div>
+                </div>
+                <div class="lyrics-display">
+                    <div class="lyrics-container" id="lyrics-container">
+                        <div class="lyrics-placeholder">播放音乐以查看歌词</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评论区模态框 -->
+    <div id="comments-modal" class="modal">
+        <div class="modal-content comments-modal-content">
+            <span class="close">&times;</span>
+            <h2>评论区</h2>
+            <div class="comments-container">
+                <div class="comment-form">
+                    <textarea id="comment-input" placeholder="请输入您的评论..."></textarea>
+                    <button id="submit-comment">发表评论</button>
+                </div>
+                <div class="comments-list" id="comments-list">
+                    <div class="comment">
+                        <p><strong>用户1:</strong> 这首歌太好听了！</p>
+                        <span class="comment-time">2025-9-11 10:30</span>
+                    </div>
+                    <div class="comment">
+                        <p><strong>用户2:</strong> SZA的声音真是迷人</p>
+                        <span class="comment-time">2025-9-11 11:45</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -196,16 +196,21 @@ section h2 {
 .player-controls {
     text-align: center;
     width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .player-controls button {
     background-color: #007AFF;
     color: white;
     border: none;
-    padding: 8px 15px;
-    margin: 0 10px;
+    padding: 8px 12px;
+    margin: 0 5px;
     border-radius: 4px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .player-progress {
@@ -233,6 +238,47 @@ section h2 {
     width: 30%;
     background-color: #007AFF;
     border-radius: 2px;
+}
+
+/* 音量控制样式 */
+.volume-control {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.volume-icon {
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+    background-color: #555;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #007AFF;
+    cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #007AFF;
+    cursor: pointer;
+    border: none;
 }
 
 /* 歌词显示区域样式 */
@@ -275,16 +321,6 @@ section h2 {
     padding: 20px;
 }
 
-.player-controls button {
-    background-color: #007AFF;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
 /* 弹出歌词框样式 */
 .modal {
     display: none;
@@ -303,16 +339,10 @@ section h2 {
     padding: 20px;
     border-radius: 8px;
     width: 80%;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 80vh;
     position: relative;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
 }
 
 .close {
@@ -331,8 +361,46 @@ section h2 {
     color: #000;
 }
 
-/* 弹出框中的歌词容器样式 */
-.modal-content .lyrics-container {
+/* 歌词内容区域 - 左右布局 */
+.lyrics-content {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 20px 0;
+    align-items: flex-start;
+}
+
+.lyrics-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.lyrics-album-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    animation: rotateAlbum 10s linear infinite;
+    animation-play-state: paused;
+}
+
+.lyrics-album-img.playing {
+    animation-play-state: running;
+}
+
+@keyframes rotateAlbum {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.lyrics-display {
+    flex-grow: 1;
     background-color: #f9f9f9;
     border-radius: 4px;
     padding: 15px;
@@ -341,62 +409,138 @@ section h2 {
     text-align: center;
 }
 
-.modal-content .lyrics-line {
+.lyrics-display .lyrics-line {
     padding: 8px;
     font-size: 16px;
     color: #666;
     transition: all 0.3s ease;
 }
 
-.modal-content .lyrics-line.active {
+.lyrics-display .lyrics-line.active {
     color: #007AFF;
     font-size: 18px;
     font-weight: bold;
     transform: scale(1.05);
 }
 
-.modal-content .lyrics-placeholder {
+.lyrics-display .lyrics-placeholder {
     color: #999;
     font-style: italic;
     padding: 20px;
 }
 
-/* 音量控制样式 */
-.volume-control {
-    display: inline-flex;
-    align-items: center;
-    margin-left: 10px;
+/* 歌词控制按钮样式 */
+.lyrics-controls {
+    text-align: center;
 }
 
-.volume-icon {
-    margin-right: 5px;
-    font-size: 16px;
-}
-
-.volume-slider {
-    width: 80px;
-    height: 4px;
-    background-color: #555;
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-}
-
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+.lyrics-play-btn {
     background-color: #007AFF;
-    cursor: pointer;
-}
-
-.volume-slider::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #007AFF;
-    cursor: pointer;
+    color: white;
     border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.lyrics-play-btn:hover {
+    background-color: #0056b3;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 评论区按钮样式 */
+.comments-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.comments-btn:hover {
+    background-color: #218838;
+}
+
+/* 收藏数样式 */
+.favorite-count {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 评论区模态框样式 */
+.comments-modal-content {
+    max-width: 600px;
+}
+
+.comments-container {
+    padding: 20px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none;
+    margin-bottom: 15px;
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.comment-form button {
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #0056b3;
+}
+
+.comments-list {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.comment {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.comment:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.comment p {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.comment-time {
+    font-size: 12px;
+    color: #999;
 }
