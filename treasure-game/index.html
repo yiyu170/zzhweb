@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             color: #fff;
             min-height: 100vh;
             padding: 20px;
@@ -25,19 +25,20 @@
         .container {
             max-width: 900px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(15, 23, 42, 0.85);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
             margin-top: 20px;
+            border: 1px solid #4c6ef5;
         }
         
         h1 {
             text-align: center;
             font-size: 2.5rem;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
-            background: linear-gradient(to right, #ffd700, #ffed4e, #ffd700);
+            text-shadow: 0 0 15px rgba(76, 110, 245, 0.7);
+            background: linear-gradient(to right, #8be9fd, #5dade2, #4c6ef5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -51,13 +52,13 @@
             margin: 20px 0;
             position: relative;
             overflow: hidden;
-            border: 3px solid #8B4513;
+            border: 3px solid #4c6ef5;
         }
         
         .progress-container {
             width: 100%;
             height: 20px;
-            background: #333;
+            background: #1e2b3a;
             border-radius: 10px;
             margin: 20px 0;
             overflow: hidden;
@@ -66,32 +67,32 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            background: linear-gradient(to right, #4c6ef5, #5dade2);
             border-radius: 10px;
-            transition: width 0.5 ease;
+            transition: width 0.5s ease;
         }
         
         .log-container {
             height: 200px;
             overflow-y: auto;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(15, 23, 42, 0.7);
             border-radius: 10px;
             padding: 15px;
             margin: 20px 0;
-            border: 1px solid #444;
+            border: 1px solid #4c6ef5;
         }
         
         .log-entry {
             margin-bottom: 10px;
             padding: 8px;
-            border-left: 3px solid #ffd700;
-            background: rgba(255, 215, 0, 0.1);
-            animation: fadeIn 0.5 ease;
+            border-left: 3px solid #4c6ef5;
+            background: rgba(76, 110, 245, 0.1);
+            animation: fadeIn 0.5s ease;
         }
         
         .log-entry.error {
-            border-left-color: #ff4444;
-            background: rgba(255, 68, 68, 0.1);
+            border-left-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
         }
         
         @keyframes fadeIn {
@@ -110,22 +111,22 @@
             padding: 12px 25px;
             border: none;
             border-radius: 50px;
-            background: linear-gradient(to right, #ff8a00, #ff2070);
+            background: linear-gradient(to right, #4c6ef5, #5dade2);
             color: white;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3 ease;
-            box-shadow: 0 4px 15px rgba(255, 138, 0, 0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 110, 245, 0.4);
         }
         
         button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 138, 0, 0.6);
+            box-shadow: 0 6px 20px rgba(76, 110, 245, 0.6);
         }
         
         button:disabled {
-            background: #666;
+            background: #6c757d;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -139,7 +140,7 @@
             height: 50px;
             background: url('https://cdn-icons-png.flaticon.com/512/2922/2922510.png') no-repeat center;
             background-size: contain;
-            transition: all 2 ease;
+            transition: all 2s ease;
             z-index: 10;
         }
         
@@ -152,7 +153,7 @@
             background: url('https://cdn-icons-png.flaticon.com/512/3138/3138965.png') no-repeat center;
             background-size: contain;
             opacity: 0;
-            transition: opacity 1 ease;
+            transition: opacity 1s ease;
         }
         
         .step-indicator {
@@ -166,18 +167,21 @@
             flex: 1;
             padding: 10px;
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(30, 43, 58, 0.5);
             margin: 0 5px;
-            transition: all 0.3 ease;
+            transition: all 0.3s ease;
+            border: 1px solid #4c6ef5;
         }
         
         .step.active {
-            background: rgba(255, 215, 0, 0.3);
+            background: rgba(76, 110, 245, 0.3);
             transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(76, 110, 245, 0.5);
         }
         
         .step.completed {
-            background: rgba(76, 175, 80, 0.3);
+            background: rgba(46, 204, 113, 0.3);
+            border-color: #2ecc71;
         }
         
         .step-icon {
@@ -188,14 +192,15 @@
         .treasure-found {
             text-align: center;
             font-size: 2rem;
-            color: #ffd700;
+            color: #5dade2;
             margin: 20px 0;
             opacity: 0;
-            transition: opacity 1 ease;
+            transition: opacity 1s ease;
         }
         
         .treasure-found.show {
             opacity: 1;
+            text-shadow: 0 0 10px rgba(93, 173, 226, 0.7);
         }
         
         .adventure-status {
@@ -203,6 +208,7 @@
             margin: 10px 0;
             font-size: 1.2rem;
             min-height: 30px;
+            color: #8be9fd;
         }
     </style>
 </head>
@@ -215,27 +221,27 @@
         <div class="step-indicator">
             <div class="step" id="step1">
                 <div class="step-icon">🔍</div>
-                <div>寻找线索</div>
+                <div>火眼金睛</div>
             </div>
             <div class="step" id="step2">
                 <div class="step-icon">📜</div>
-                <div>解码古文字</div>
+                <div>智慧谜题</div>
             </div>
             <div class="step" id="step3">
                 <div class="step-icon">🗝️</div>
-                <div>寻找钥匙</div>
+                <div>钥匙藏身</div>
             </div>
             <div class="step" id="step4">
                 <div class="step-icon">🏛️</div>
-                <div>探索神庙</div>
+                <div>神庙闯关</div>
             </div>
             <div class="step" id="step5">
                 <div class="step-icon">🔓</div>
-                <div>解开密码</div>
+                <div>破解密码</div>
             </div>
             <div class="step" id="step6">
                 <div class="step-icon">🏆</div>
-                <div>获得宝藏</div>
+                <div>宝藏现身</div>
             </div>
         </div>
         
