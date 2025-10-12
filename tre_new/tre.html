@@ -22,7 +22,7 @@
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-size: 400% 400%;
-            animation: gradientBG 15 ease infinite;
+            animation: gradientBG 15s ease infinite;
         }
         
         @keyframes gradientBG {
@@ -95,7 +95,7 @@
             width: 0%;
             background: linear-gradient(to right, #4c6ef5, #5dade2);
             border-radius: 10px;
-            transition: width 0.5 ease;
+            transition: width 0.5s ease;
         }
         
         .log-container {
@@ -113,7 +113,7 @@
             padding: 8px;
             border-left: 3px solid #4c6ef5;
             background: rgba(76, 110, 245, 0.1);
-            animation: fadeIn 0.5 ease;
+            animation: fadeIn 0.5s ease;
         }
         
         .log-entry.error {
@@ -142,7 +142,7 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3 ease;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -170,7 +170,7 @@
             height: 50px;
             background: url('https://cdn-icons-png.flaticon.com/512/6198/6198527.png') no-repeat center;
             background-size: contain;
-            transition: all 2 ease;
+            transition: all 2s ease;
             z-index: 10;
             filter: drop-shadow(2px 4px 6px black);
         }
@@ -347,7 +347,7 @@
         /* 页面切换动画 */
         .page {
             display: none;
-            animation: fadeIn 0.5 ease;
+            animation: fadeIn 0.5s ease;
         }
         
         .page.active {
@@ -372,7 +372,7 @@
             padding: 5px;
             border-radius: 5px;
             background-color: rgba(0, 0, 0, 0.5);
-            transition: all 0.3 ease;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -483,23 +483,23 @@
         </div>
     </div>
 
-    <audio id="backgroundMusic" loop>
+    <audio id="backgroundMusic" loop autoplay>
         <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/1.mp3" type="audio/mpeg">
     </audio>
     
-    <audio id="libraryMusic" loop>
+    <audio id="libraryMusic" loop autoplay>
         <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/2.mp3" type="audio/mpeg">
     </audio>
     
-    <audio id="templeMusic" loop>
+    <audio id="templeMusic" loop autoplay>
         <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/3.mp3" type="audio/mpeg">
     </audio>
     
-    <audio id="caveMusic" loop>
+    <audio id="caveMusic" loop autoplay>
         <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/4.mp3" type="audio/mpeg">
     </audio>
     
-    <audio id="valleyMusic" loop>
+    <audio id="valleyMusic" loop autoplay>
         <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/5.mp3" type="audio/mpeg">
     </audio>
 
@@ -658,6 +658,30 @@
                 this.volume = 0.5;
                 
                 this.setupEventListeners();
+                
+                // 页面加载时自动播放音乐
+                window.addEventListener('load', () => {
+                    this.autoPlayMusic();
+                });
+                
+                // 用户首次交互时自动播放音乐（备选方案）
+                document.addEventListener('click', () => {
+                    if (!this.isPlaying) {
+                        this.autoPlayMusic();
+                    }
+                }, { once: true });
+            }
+            
+            // 尝试自动播放音乐
+            autoPlayMusic() {
+                if (gameState && gameState.musicEnabled !== false) {
+                    this.playMusic('background');
+                    const musicToggle = document.getElementById('musicToggle');
+                    if (musicToggle) {
+                        musicToggle.innerHTML = '♪';
+                        musicToggle.style.color = '#FFD700';
+                    }
+                }
             }
             
             setupEventListeners() {
@@ -726,12 +750,17 @@
                 }
                 
                 if (this.currentMusic) {
+                    // 确保音量设置正确
                     this.currentMusic.volume = this.volume;
+                    // 取消静音（如果之前设置了静音属性）
+                    this.currentMusic.muted = false;
                     
                     // 更新音乐按钮状态
                     const musicToggle = document.getElementById('musicToggle');
-                    musicToggle.innerHTML = '♪';
-                    musicToggle.style.color = '#FFD700';
+                    if (musicToggle) {
+                        musicToggle.innerHTML = '♪';
+                        musicToggle.style.color = '#FFD700';
+                    }
                     
                     // 尝试播放音乐
                     const playPromise = this.currentMusic.play();
@@ -742,12 +771,26 @@
                             // 播放成功
                             this.isPlaying = true;
                             console.log('音乐播放成功');
+                            
+                            // 更新状态消息
+                            const status = document.getElementById('status');
+                            if (status) {
+                                status.textContent = '音乐已自动播放';
+                                setTimeout(() => {
+                                    if (status.textContent === '音乐已自动播放') {
+                                        status.textContent = '准备开始寻宝冒险...';
+                                    }
+                                }, 3000);
+                            }
                         }).catch(error => {
                             // 自动播放被阻止
                             console.log('自动播放被阻止:', error);
                             this.isPlaying = false;
-                            musicToggle.innerHTML = '♪';
-                            musicToggle.style.color = 'white';
+                            
+                            if (musicToggle) {
+                                musicToggle.innerHTML = '♪';
+                                musicToggle.style.color = 'white';
+                            }
                             
                             // 显示提示信息
                             const status = document.getElementById('status');
