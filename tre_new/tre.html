@@ -731,6 +731,13 @@
                 
                 this.stopMusic();
                 
+                // 暂停所有音乐
+                this.backgroundMusic.pause();
+                this.libraryMusic.pause();
+                this.templeMusic.pause();
+                this.caveMusic.pause();
+                this.valleyMusic.pause();
+                
                 switch(type) {
                     case 'background':
                         this.currentMusic = this.backgroundMusic;
