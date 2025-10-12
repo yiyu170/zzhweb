@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神秘宝藏探险</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-size: 400% 400%;
+            animation: gradientBG 15 ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            margin-top: 20px;
+            border: 2px solid gold;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            background: linear-gradient(to right, #FFD700, #FFA500, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            border-radius: 3px;
+        }
+        
+        .treasure-map {
+            width: 100%;
+            height: 300px;
+            background: url('https://images.pexels.com/photos/2859169/pexels-photo-2859169.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center;
+            background-size: cover;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid gold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: #1e2b3a;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4c6ef5, #5dade2);
+            border-radius: 10px;
+            transition: width 0.5 ease;
+        }
+        
+        .log-container {
+            height: 200px;
+            overflow-y: auto;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 1px solid #4c6ef5;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid #4c6ef5;
+            background: rgba(76, 110, 245, 0.1);
+            animation: fadeIn 0.5 ease;
+        }
+        
+        .log-entry.error {
+            border-left-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #333;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3 ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(to right, #FFA500, #FFD700);
+        }
+        
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #ddd;
+        }
+        
+        .character {
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background: url('https://cdn-icons-png.flaticon.com/512/6198/6198527.png') no-repeat center;
+            background-size: contain;
+            transition: all 2 ease;
+            z-index: 10;
+            filter: drop-shadow(2px 4px 6px black);
+        }
+        
+        .treasure {
+            position: absolute;
+            bottom: 20px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: url('https://cdn-icons-png.flaticon.com/512/2168/2168281.png') no-repeat center;
+            background-size: contain;
+            opacity: 0;
+            transition: opacity 1s ease;
+            filter: drop-shadow(2px 4px 6px gold);
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        
+        .step {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(30, 43, 58, 0.5);
+            margin: 0 5px;
+            transition: all 0.3s ease;
+            border: 1px solid #4c6ef5;
+        }
+        
+        .step.active {
+            background: rgba(76, 110, 245, 0.3);
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(76, 110, 245, 0.5);
+        }
+        
+        .step.completed {
+            background: rgba(46, 204, 113, 0.3);
+            border-color: #2ecc71;
+        }
+        
+        .step-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .treasure-found {
+            text-align: center;
+            font-size: 2rem;
+            color: #5dade2;
+            margin: 20px 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        
+        .treasure-found.show {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(93, 173, 226, 0.7);
+        }
+        
+        .adventure-status {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            min-height: 30px;
+            color: #8be9fd;
+        }
+        
+        /* 全景页面样式 */
+        .panorama-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .location-card {
+            background: rgba(30, 43, 58, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-5px);
+            border-color: #4c6ef5;
+            box-shadow: 0 5px 15px rgba(76, 110, 245, 0.4);
+        }
+        
+        .location-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .location-card h3 {
+            margin-bottom: 10px;
+            color: #8be9fd;
+        }
+        
+        .location-card p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .location-card.completed {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+        
+        .location-card.completed h3 {
+            color: #2ecc71;
+        }
+        
+        /* 音乐控制样式 */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid #4c6ef5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .music-btn:hover {
+            background: rgba(76, 110, 245, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* 导航样式 */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(76, 110, 245, 0.3);
+            border: 1px solid #4c6ef5;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(76, 110, 245, 0.5);
+        }
+        
+        /* 页面切换动画 */
+        .page {
+            display: none;
+            animation: fadeIn 0.5 ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .completion-message {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid #2ecc71;
+            border-radius: 10px;
+            color: #2ecc71;
+        }
+        
+        .status-message {
+            text-align: center;
+            font-size: 16px;
+            color: #FFD700;
+            margin: 10px 0;
+            padding: 5px;
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: all 0.3 ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="music-controls">
+        <button class="music-btn" id="musicToggle" title="点击开始/暂停音乐">♪</button>
+        <button class="music-btn" id="volumeDown" title="减少音量">-</button>
+        <button class="music-btn" id="volumeUp" title="增加音量">+</button>
+    </div>
+    
+    <h1>神秘宝藏探险</h1>
+    
+    <div class="container">
+        <div id="status" class="status-message">点击音乐按钮开始播放背景音乐</div>
+        <!-- 全景页面 -->
+        <div class="page active" id="panoramaPage">
+            <div class="navigation">
+                <button class="nav-btn" id="backToGame" style="visibility: hidden;">返回游戏</button>
+                <h2>探险地点</h2>
+                <button class="nav-btn" id="saveGame">保存进度</button>
+            </div>
+            
+            <div id="completionMessage" class="completion-message" style="display: none;">
+                恭喜！你已经完成了所有地点的探索！
+            </div>
+            
+            <div class="panorama-container">
+                <div class="location-card" id="libraryCard" data-location="library">
+                    <img src="https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="古老图书馆">
+                    <h3>古老图书馆</h3>
+                    <p>寻找初始线索的地方</p>
+                </div>
+                
+                <div class="location-card" id="templeCard" data-location="temple">
+                    <img src="https://images.pexels.com/photos/1485894/pexels-photo-1485894.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="神秘神庙">
+                    <h3>神秘神庙</h3>
+                    <p>解开谜题，寻找宝藏</p>
+                </div>
+                
+                <div class="location-card" id="caveCard" data-location="cave">
+                    <img src="https://images.pexels.com/photos/2387819/pexels-photo-2387819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="隐藏洞穴">
+                    <h3>隐藏洞穴</h3>
+                    <p>寻找隐藏的钥匙</p>
+                </div>
+                
+                <div class="location-card" id="valleyCard" data-location="valley">
+                    <img src="https://images.pexels.com/photos/1366909/pexels-photo-1366909.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="遗忘山谷">
+                    <h3>遗忘山谷</h3>
+                    <p>破解最后的密码</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 游戏页面 -->
+        <div class="page" id="gamePage">
+            <div class="navigation">
+                <button class="nav-btn" id="backToPanorama">返回全景</button>
+                <h2 id="locationTitle">古老图书馆</h2>
+                <button class="nav-btn" id="saveGame2">保存进度</button>
+            </div>
+            
+            <div class="adventure-status" id="status">准备开始寻宝冒险...</div>
+            
+            <div class="step-indicator">
+                <div class="step" id="step1">
+                    <div class="step-icon">🔍</div>
+                    <div>火眼金睛</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">📜</div>
+                    <div>智慧谜题</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">🗝️</div>
+                    <div>钥匙藏身</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-icon">🏛️</div>
+                    <div>神庙闯关</div>
+                </div>
+                <div class="step" id="step5">
+                    <div class="step-icon">🔓</div>
+                    <div>破解密码</div>
+                </div>
+                <div class="step" id="step6">
+                    <div class="step-icon">🏆</div>
+                    <div>宝藏现身</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="treasure-map" id="treasureMap">
+                <div class="character" id="character"></div>
+                <div class="treasure" id="treasure"></div>
+            </div>
+            
+            <div class="log-container" id="logContainer"></div>
+            
+            <div class="treasure-found" id="treasureFound">恭喜！你找到了传说中的宝藏！</div>
+            
+            <div class="controls">
+                <button id="startBtn">开始寻宝</button>
+                <button id="resetBtn" disabled>重新开始</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/1.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="libraryMusic" loop>
+        <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/2.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="templeMusic" loop>
+        <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/3.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="caveMusic" loop>
+        <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/4.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="valleyMusic" loop>
+        <source src="https://java-web-zzh.oss-cn-beijing.aliyuncs.com/%E5%AF%BB%E5%AE%9D%E4%BD%9C%E4%B8%9A/5.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 页面加载完成后自动加载保存的游戏状态
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化游戏状态
+            const gameState = new GameState();
+            
+            // 尝试加载保存的游戏状态
+            if (gameState.load()) {
+                console.log('成功加载保存的游戏状态');
+                
+                // 更新音乐设置
+                musicManager.setVolume(gameState.volume);
+                if (gameState.musicEnabled) {
+                    musicManager.play();
+                } else {
+                    musicManager.pause();
+                }
+            } else {
+                console.log('没有找到保存的游戏状态，使用默认设置');
+            }
+        });
+        
+        // 游戏状态管理
+        class GameState {
+            constructor() {
+                this.currentLocation = 'library';
+                this.completedLocations = [];
+                this.gameProgress = {
+                    library: { completed: false, progress: 0 },
+                    temple: { completed: false, progress: 0 },
+                    cave: { completed: false, progress: 0 },
+                    valley: { completed: false, progress: 0 }
+                };
+                this.musicEnabled = true;
+                this.volume = 0.5;
+            }
+            
+            save() {
+                const state = {
+                    currentLocation: this.currentLocation,
+                    completedLocations: this.completedLocations,
+                    gameProgress: this.gameProgress,
+                    musicEnabled: this.musicEnabled,
+                    volume: this.volume
+                };
+                localStorage.setItem('treasureHuntState', JSON.stringify(state));
+                console.log('游戏状态已保存:', state);
+            }
+            
+            load() {
+                const savedState = localStorage.getItem('treasureHuntState');
+                if (savedState) {
+                    try {
+                        const state = JSON.parse(savedState);
+                        this.currentLocation = state.currentLocation || 'library';
+                        this.completedLocations = state.completedLocations || [];
+                        
+                        // 确保所有地点都有进度记录
+                        this.gameProgress = {
+                            library: state.gameProgress?.library || { completed: false, progress: 0 },
+                            temple: state.gameProgress?.temple || { completed: false, progress: 0 },
+                            cave: state.gameProgress?.cave || { completed: false, progress: 0 },
+                            valley: state.gameProgress?.valley || { completed: false, progress: 0 }
+                        };
+                        
+                        this.musicEnabled = state.musicEnabled !== undefined ? state.musicEnabled : true;
+                        this.volume = state.volume || 0.5;
+                        
+                        console.log('游戏状态已加载:', state);
+                        
+                        // 更新UI
+                        this.updateLocationCards();
+                        this.checkAllCompleted();
+                        return true;
+                    } catch (e) {
+                        console.error('加载游戏状态失败:', e);
+                        return false;
+                    }
+                }
+                return false;
+            }
+            
+            updateLocationCards() {
+                const locations = ['library', 'temple', 'cave', 'valley'];
+                locations.forEach(location => {
+                    const card = document.getElementById(`${location}Card`);
+                    if (card) {
+                        if (this.gameProgress[location].completed) {
+                            card.classList.add('completed');
+                        } else {
+                            card.classList.remove('completed');
+                        }
+                    }
+                });
+            }
+            
+            completeLocation(location) {
+                if (!this.completedLocations.includes(location)) {
+                    this.completedLocations.push(location);
+                }
+                this.gameProgress[location].completed = true;
+                this.save();
+                this.updateLocationCards();
+                this.checkAllCompleted();
+            }
+            
+            checkAllCompleted() {
+                const allCompleted = ['library', 'temple', 'cave', 'valley'].every(
+                    location => this.gameProgress[location].completed
+                );
+                
+                const completionMessage = document.getElementById('completionMessage');
+                if (completionMessage) {
+                    completionMessage.style.display = allCompleted ? 'block' : 'none';
+                }
+                
+                return allCompleted;
+            }
+            
+            updateProgress(location, progress) {
+                this.gameProgress[location].progress = progress;
+                this.save();
+            }
+            
+            resetGame() {
+                this.completedLocations = [];
+                this.gameProgress = {
+                    library: { completed: false, progress: 0 },
+                    temple: { completed: false, progress: 0 },
+                    cave: { completed: false, progress: 0 },
+                    valley: { completed: false, progress: 0 }
+                };
+                this.save();
+                this.updateLocationCards();
+                
+                const completionMessage = document.getElementById('completionMessage');
+                if (completionMessage) {
+                    completionMessage.style.display = 'none';
+                }
+            }
+        }
+
+        // 音乐管理器
+        class MusicManager {
+            constructor() {
+                this.backgroundMusic = document.getElementById('backgroundMusic');
+                this.libraryMusic = document.getElementById('libraryMusic');
+                this.templeMusic = document.getElementById('templeMusic');
+                this.caveMusic = document.getElementById('caveMusic');
+                this.valleyMusic = document.getElementById('valleyMusic');
+                this.currentMusic = null;
+                this.isPlaying = false;
+                this.volume = 0.5;
+                
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('musicToggle').addEventListener('click', () => this.toggleMusic());
+                document.getElementById('volumeUp').addEventListener('click', () => this.increaseVolume());
+                document.getElementById('volumeDown').addEventListener('click', () => this.decreaseVolume());
+            }
+            
+            toggleMusic() {
+                const musicToggle = document.getElementById('musicToggle');
+                
+                if (this.isPlaying) {
+                    this.stopMusic();
+                    musicToggle.innerHTML = '♪';
+                    musicToggle.style.color = 'white';
+                    
+                    // 显示音乐已暂停提示
+                    const status = document.getElementById('status');
+                    if (status) {
+                        status.textContent = '音乐已暂停';
+                        setTimeout(() => {
+                            if (status.textContent === '音乐已暂停') {
+                                status.textContent = '准备开始寻宝冒险...';
+                            }
+                        }, 3000);
+                    }
+                } else {
+                    this.playMusic('background');
+                    musicToggle.innerHTML = '♪';
+                    musicToggle.style.color = '#FFD700';
+                    
+                    // 显示音乐已开启提示
+                    const status = document.getElementById('status');
+                    if (status) {
+                        status.textContent = '音乐已开启';
+                        setTimeout(() => {
+                            if (status.textContent === '音乐已开启') {
+                                status.textContent = '准备开始寻宝冒险...';
+                            }
+                        }, 3000);
+                    }
+                }
+            }
+            
+            playMusic(type) {
+                if (!gameState.musicEnabled) return;
+                
+                this.stopMusic();
+                
+                switch(type) {
+                    case 'background':
+                        this.currentMusic = this.backgroundMusic;
+                        break;
+                    case 'library':
+                        this.currentMusic = this.libraryMusic;
+                        break;
+                    case 'temple':
+                        this.currentMusic = this.templeMusic;
+                        break;
+                    case 'cave':
+                        this.currentMusic = this.caveMusic;
+                        break;
+                    case 'valley':
+                        this.currentMusic = this.valleyMusic;
+                        break;
+                }
+                
+                if (this.currentMusic) {
+                    this.currentMusic.volume = this.volume;
+                    
+                    // 更新音乐按钮状态
+                    const musicToggle = document.getElementById('musicToggle');
+                    musicToggle.innerHTML = '♪';
+                    musicToggle.style.color = '#FFD700';
+                    
+                    // 尝试播放音乐
+                    const playPromise = this.currentMusic.play();
+                    
+                    // 处理可能的自动播放限制
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // 播放成功
+                            this.isPlaying = true;
+                            console.log('音乐播放成功');
+                        }).catch(error => {
+                            // 自动播放被阻止
+                            console.log('自动播放被阻止:', error);
+                            this.isPlaying = false;
+                            musicToggle.innerHTML = '♪';
+                            musicToggle.style.color = 'white';
+                            
+                            // 显示提示信息
+                            const status = document.getElementById('status');
+                            if (status) {
+                                status.textContent = '点击音乐按钮开始播放背景音乐';
+                                setTimeout(() => {
+                                    if (status.textContent === '点击音乐按钮开始播放背景音乐') {
+                                        status.textContent = '准备开始寻宝冒险...';
+                                    }
+                                }, 5000);
+                            }
+                        });
+                    }
+                }
+            }
+            
+            stopMusic() {
+                if (this.currentMusic) {
+                    this.currentMusic.pause();
+                    this.currentMusic.currentTime = 0;
+                }
+                this.isPlaying = false;
+            }
+            
+            increaseVolume() {
+                this.volume = Math.min(1, this.volume + 0.1);
+                if (this.currentMusic) {
+                    this.currentMusic.volume = this.volume;
+                }
+                gameState.volume = this.volume;
+                gameState.save();
+            }
+            
+            decreaseVolume() {
+                this.volume = Math.max(0, this.volume - 0.1);
+                if (this.currentMusic) {
+                    this.currentMusic.volume = this.volume;
+                }
+                gameState.volume = this.volume;
+                gameState.save();
+            }
+            
+            setMusicEnabled(enabled) {
+                gameState.musicEnabled = enabled;
+                if (!enabled) {
+                    this.stopMusic();
+                } else {
+                    this.playMusic('background');
+                }
+                gameState.save();
+            }
+        }
+
+        // 页面管理器
+        class PageManager {
+            constructor() {
+                this.panoramaPage = document.getElementById('panoramaPage');
+                this.gamePage = document.getElementById('gamePage');
+                this.locationTitle = document.getElementById('locationTitle');
+                
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('backToPanorama').addEventListener('click', () => this.showPanorama());
+                document.getElementById('backToGame').addEventListener('click', () => this.showGame());
+                document.getElementById('saveGame').addEventListener('click', () => gameState.save());
+                document.getElementById('saveGame2').addEventListener('click', () => gameState.save());
+                
+                // 地点卡片点击事件
+                const locationCards = document.querySelectorAll('.location-card');
+                locationCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const location = card.getAttribute('data-location');
+                        this.showGame(location);
+                    });
+                });
+            }
+            
+            showPanorama() {
+                this.panoramaPage.classList.add('active');
+                this.gamePage.classList.remove('active');
+                musicManager.playMusic('background');
+                
+                // 更新地点卡片状态
+                gameState.updateLocationCards();
+                gameState.checkAllCompleted();
+            }
+            
+            showGame(location = null) {
+                if (location) {
+                    gameState.currentLocation = location;
+                    gameState.save();
+                }
+                
+                this.panoramaPage.classList.remove('active');
+                this.gamePage.classList.add('active');
+                
+                // 更新位置标题
+                const locationNames = {
+                    library: '古老图书馆',
+                    temple: '神秘神庙',
+                    cave: '隐藏洞穴',
+                    valley: '遗忘山谷'
+                };
+                this.locationTitle.textContent = locationNames[gameState.currentLocation];
+                
+                // 播放对应地点的音乐
+                musicManager.playMusic(gameState.currentLocation);
+                
+                // 重置寻宝游戏状态
+                treasureHunter.resetAdventure();
+            }
+        }
+
+        // 扩展宝藏地图API，增加更多有趣的寻宝情节
+        class TreasureMap {
+            static async getInitialClue() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve("在古老的图书馆里找到了第一个线索...");
+                    }, 1000);
+                });
+            }
+
+            static async decodeAncientScript(clue) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        if (!clue) {
+                            reject("没有线索可以解码!");
+                        }
+                        // 随机增加一些有趣的解码结果
+                        const results = [
+                            "解码成功!宝藏在一座古老的神庙中...",
+                            "古文字揭示: 宝藏藏在被遗忘的神庙深处...",
+                            "经过艰难解码，发现宝藏位于神秘的山谷神庙..."
+                        ];
+                        resolve(results[Math.floor(Math.random() * results.length)]);
+                    }, 1500);
+                });
+            }
+
+            static async searchTemple(location) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const random = Math.random();
+                        if (random < 0.3) {
+                            reject("糟糕!遇到了神庙守卫!需要重新寻找入口...");
+                        } else if (random < 0.6) {
+                            reject("哎呀!触发了古老陷阱，需要小心行事...");
+                        } else {
+                            resolve("找到了一个神秘的箱子...");
+                        }
+                    }, 2000);
+                });
+            }
+
+            static async openTreasureBox() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve("恭喜!你找到了传说中的宝藏!");
+                    }, 1000);
+                });
+            }
+
+            // 新增方法：寻找隐藏的钥匙
+            static async findHiddenKey() {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const random = Math.random();
+                        if (random < 0.4) {
+                            reject("在寻找钥匙时遇到了难题，需要更多时间...");
+                        } else {
+                            resolve("成功找到了隐藏的古老钥匙!");
+                        }
+                    }, 1500);
+                });
+            }
+
+            // 新增方法：解开宝箱密码
+            static async solvePuzzle() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const puzzles = [
+                            "成功解开了古老的数字谜题!",
+                            "通过观察星象，解开了宝箱的密码!",
+                            "利用找到的线索，成功破解了宝箱的机关!"
+                        ];
+                        resolve(puzzles[Math.floor(Math.random() * puzzles.length)]);
+                    }, 1800);
+                });
+            }
+        }
+
+        // 使用async/await重写寻宝过程
+        class TreasureHunter {
+            constructor() {
+                this.isSearching = false;
+                this.currentStep = 0;
+                this.totalSteps = 6;
+                
+                // 安全地获取DOM元素
+                this.elements = {
+                    logContainer: document.getElementById('logContainer'),
+                    progressBar: document.getElementById('progressBar'),
+                    character: document.getElementById('character'),
+                    treasure: document.getElementById('treasure'),
+                    treasureFound: document.getElementById('treasureFound'),
+                    startBtn: document.getElementById('startBtn'),
+                    resetBtn: document.getElementById('resetBtn'),
+                    status: document.getElementById('status'),
+                    treasureMap: document.getElementById('treasureMap')
+                };
+                
+                // 初始化步骤元素
+                this.stepElements = {};
+                for (let i = 1; i <= 6; i++) {
+                    this.stepElements[i] = document.getElementById(`step${i}`);
+                }
+                
+                this.setupEventListeners();
+                
+                // 根据当前位置设置地图背景
+                this.updateMapBackground();
+            }
+            
+            setupEventListeners() {
+                this.elements.startBtn.addEventListener('click', () => this.startAdventure());
+                this.elements.resetBtn.addEventListener('click', () => this.resetAdventure());
+            }
+            
+            updateMapBackground() {
+                const locationBackgrounds = {
+                    library: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    temple: 'https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    cave: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+                    valley: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+                };
+                
+                this.elements.treasureMap.style.backgroundImage = `url('${locationBackgrounds[gameState.currentLocation]}')`;
+            }
+            
+            async startAdventure() {
+                if (this.isSearching) return;
+                
+                this.isSearching = true;
+                this.elements.startBtn.disabled = true;
+                this.elements.resetBtn.disabled = true;
+                this.clearLog();
+                this.resetProgress();
+                this.hideTreasure();
+                this.updateStatus("寻宝冒险开始！");
+                
+                try {
+                    await this.findTreasureWithAsyncAwait();
+                    // 完成当前地点
+                    gameState.completeLocation(gameState.currentLocation);
+                } catch (error) {
+                    this.addLog(`任务失败: ${error}`, true);
+                    this.updateStatus("寻宝失败！");
+                    this.elements.startBtn.disabled = false;
+                    this.elements.resetBtn.disabled = false;
+                    this.isSearching = false;
+                }
+            }
+            
+            resetAdventure() {
+                this.isSearching = false;
+                this.currentStep = 0;
+                this.elements.startBtn.disabled = false;
+                this.elements.resetBtn.disabled = true;
+                this.clearLog();
+                this.resetProgress();
+                this.resetCharacter();
+                this.hideTreasure();
+                this.resetSteps();
+                this.updateStatus("准备开始新的寻宝冒险...");
+                this.updateMapBackground();
+            }
+            
+            async findTreasureWithAsyncAwait() {
+                // 步骤1: 获取初始线索
+                this.updateStep(1);
+                this.updateStatus("正在图书馆中寻找线索...");
+                this.moveCharacter(20);
+                const clue = await TreasureMap.getInitialClue();
+                this.addLog(clue);
+                this.updateProgress();
+                
+                // 步骤2: 解码古文字
+                this.updateStep(2);
+                this.updateStatus("正在解码古老的文字...");
+                this.moveCharacter(40);
+                const location = await TreasureMap.decodeAncientScript(clue);
+                this.addLog(location);
+                this.updateProgress();
+                
+                // 步骤3: 寻找隐藏的钥匙（新增步骤）
+                this.updateStep(3);
+                this.updateStatus("正在寻找隐藏的钥匙...");
+                this.moveCharacter(60);
+                let attempts = 0;
+                let keyFound = false;
+                
+                while (!keyFound && attempts < 3) {
+                    try {
+                        const keyResult = await TreasureMap.findHiddenKey();
+                        this.addLog(keyResult);
+                        keyFound = true;
+                    } catch (error) {
+                        attempts++;
+                        this.addLog(`${error} (尝试 ${attempts}/3)`, true);
+                        if (attempts >= 3) {
+                            throw new Error("寻找钥匙失败，探险中止!");
+                        }
+                    }
+                }
+                this.updateProgress();
+                
+                // 步骤4: 探索神庙
+                this.updateStep(4);
+                this.updateStatus("正在探索古老的神庙...");
+                this.moveCharacter(80);
+                let templeFound = false;
+                attempts = 0;
+                
+                while (!templeFound && attempts < 3) {
+                    try {
+                        const box = await TreasureMap.searchTemple(location);
+                        this.addLog(box);
+                        templeFound = true;
+                    } catch (error) {
+                        attempts++;
+                        this.addLog(`${error} (尝试 ${attempts}/3)`, true);
+                        if (attempts >= 3) {
+                            throw new Error("探索神庙失败，探险中止!");
+                        }
+                    }
+                }
+                this.updateProgress();
+                
+                // 步骤5: 解开宝箱密码（新增步骤）
+                this.updateStep(5);
+                this.updateStatus("正在解开宝箱的密码...");
+                this.moveCharacter(90);
+                const puzzleResult = await TreasureMap.solvePuzzle();
+                this.addLog(puzzleResult);
+                this.updateProgress();
+                
+                // 步骤6: 打开宝箱获得宝藏
+                this.updateStep(6);
+                this.updateStatus("正在打开宝箱...");
+                this.moveCharacter(100);
+                const treasure = await TreasureMap.openTreasureBox();
+                this.addLog(treasure);
+                this.updateProgress();
+                
+                // 寻宝成功
+                this.showTreasure();
+                this.updateStatus("寻宝成功！恭喜你找到了宝藏！");
+                this.elements.startBtn.disabled = true;
+                this.elements.resetBtn.disabled = false;
+                this.isSearching = false;
+            }
+            
+            addLog(message, isError = false) {
+                const logEntry = document.createElement('div');
+                logEntry.className = isError ? 'log-entry error' : 'log-entry';
+                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                this.elements.logContainer.appendChild(logEntry);
+                this.elements.logContainer.scrollTop = this.elements.logContainer.scrollHeight;
+            }
+            
+            clearLog() {
+                this.elements.logContainer.innerHTML = '';
+            }
+            
+            updateProgress() {
+                this.currentStep++;
+                const progress = (this.currentStep / this.totalSteps) * 100;
+                this.elements.progressBar.style.width = `${progress}%`;
+                
+                // 保存进度
+                gameState.updateProgress(gameState.currentLocation, progress);
+            }
+            
+            resetProgress() {
+                this.currentStep = 0;
+                this.elements.progressBar.style.width = '0%';
+            }
+            
+            moveCharacter(percentage) {
+                this.elements.character.style.left = `${percentage}%`;
+            }
+            
+            resetCharacter() {
+                this.elements.character.style.left = '50px';
+            }
+            
+            showTreasure() {
+                this.elements.treasure.style.opacity = '1';
+                this.elements.treasureFound.classList.add('show');
+            }
+            
+            hideTreasure() {
+                this.elements.treasure.style.opacity = '0';
+                this.elements.treasureFound.classList.remove('show');
+            }
+            
+            updateStep(stepNumber) {
+                // 重置所有步骤
+                for (let i = 1; i <= 6; i++) {
+                    if (this.stepElements[i]) {
+                        this.stepElements[i].classList.remove('active', 'completed');
+                    }
+                }
+                
+                // 标记已完成步骤
+                for (let i = 1; i < stepNumber; i++) {
+                    if (this.stepElements[i]) {
+                        this.stepElements[i].classList.add('completed');
+                    }
+                }
+                
+                // 标记当前步骤
+                if (this.stepElements[stepNumber]) {
+                    this.stepElements[stepNumber].classList.add('active');
+                }
+            }
+            
+            resetSteps() {
+                for (let i = 1; i <= 6; i++) {
+                    if (this.stepElements[i]) {
+                        this.stepElements[i].classList.remove('active', 'completed');
+                    }
+                }
+            }
+            
+            updateStatus(message) {
+                this.elements.status.textContent = message;
+            }
+        }
+
+        // 全局变量
+        let gameState;
+        let musicManager;
+        let pageManager;
+        let treasureHunter;
+
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化游戏状态
+            gameState = new GameState();
+            const hasSavedState = gameState.load();
+            
+            // 初始化音乐管理器
+            musicManager = new MusicManager();
+            musicManager.volume = gameState.volume;
+            
+            // 初始化页面管理器
+            pageManager = new PageManager();
+            
+            // 初始化寻宝游戏
+            treasureHunter = new TreasureHunter();
+            
+            // 如果有保存的状态，显示游戏页面
+            if (hasSavedState && gameState.currentLocation) {
+                pageManager.showGame(gameState.currentLocation);
+            }
+            
+            // 添加重置游戏按钮（用于测试）
+            const resetBtn = document.createElement('button');
+            resetBtn.textContent = '重置游戏';
+            resetBtn.style.position = 'fixed';
+            resetBtn.style.top = '20px';
+            resetBtn.style.left = '20px';
+            resetBtn.style.zIndex = '1000';
+            resetBtn.addEventListener('click', () => {
+                if (confirm('确定要重置所有游戏进度吗？')) {
+                    gameState.resetGame();
+                    location.reload();
+                }
+            });
+            document.body.appendChild(resetBtn);
+        });
+    </script>
+</body>
+</html>
